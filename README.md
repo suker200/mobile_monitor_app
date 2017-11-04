@@ -1,5 +1,9 @@
 # Mobile Monitor App
 
+# Picture
+
+![alt text](https://raw.githubusercontent.com/suker200/mobile_monitor_app/master/23224686_1553046081442338_997096056_o.png)
+
 # Reason
 - We need to aggregate all issues in the same place, and detail in one tap/click
 - We want to monitor using mobile
