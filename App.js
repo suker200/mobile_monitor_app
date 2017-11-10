@@ -7,15 +7,18 @@ import {
   ScrollView,
   FlatList,
   TextInput,
-  Button
+  Button,
+  Image
 } from 'react-native';
 
 import { StackNavigator, TabNavigator } from 'react-navigation';
 
 import ApiUtils from './ApiUtils'
 import Login from './Login'
-import Dashboard from './Dashboard'
+import Issues from './childScreen/Issues'
 import IssueInfo from './childScreen/IssueInfo'
+
+import { DrawerNavigator } from 'react-navigation';
 
 var Person = {
   endpoint: '',
@@ -36,14 +39,35 @@ class LoginScreen extends React.Component {
   }
 }
 
-class DashboardScreen extends React.Component {
+class DashboardHome extends React.Component {
+  // static navigationOptions = {
+  //   drawerLabel: 'Home',
+  //   drawerIcon: ({ tintColor }) => (
+  //     <Image
+  //       source={require('./image/dashboard_home.png')}
+  //       style={[styles.icon, {tintColor: tintColor}]}
+  //     />
+  //   ),
+  // };
+
   render() {
     return(
-      <View>
-        <Dashboard navigation={this.props.navigation}/>
-      </View>
-    )
+        <View>
+          <Text style={styles.dashboard} onPress={() => this.props.navigation.navigate('DrawerOpen')}>PUSH ME</Text>
+          <Text> "Happy Polla"  </Text>
+        </View>
+      )
   }
+}
+
+class DashboardScreen extends React.Component {
+  render() {
+    const { navigate } = this.props.navigation;
+    return(
+        <DashboardStack />
+      );
+  }
+
 }
 
 class IssueInfoScreen extends React.Component {
@@ -56,25 +80,56 @@ class IssueInfoScreen extends React.Component {
   }
 }
 
-
-const LoginNavigator = TabNavigator({
-  Login: {screen: LoginScreen},
-  // Dashboard: { screen: DashboardScreen },
-  // // All: { screen: AllContactsScreen },
-});
-
-const SimpleApp = StackNavigator({
-  Home: {
-    screen: LoginNavigator,
+const IssueStack = StackNavigator({
+  Issues: {
+    screen: Issues,
     navigationOptions: {
-      title: '\t\t\t\t\t\t\t\t\t\t\t\t\tMonitor Dashboard',
-    }
+      title: 'Issues',
+    }    
   },
   IssueInfo: { 
     screen: IssueInfoScreen,
     navigationOptions: {
-      title: 'Issue',
+      title: 'IssueInfo',
     }    
+  },
+}, {
+  headerMode: 'float',
+  navigationOptions: ({navigation}) => ({
+    headerTintColor: '#2F95D6',
+    headerStyle: {
+      backgroundColor: '#ffffff',
+      borderBottomColor: '#2F95D6',
+      borderBottomWidth: 3
+    },
+    headerRight: <Text style={styles.menu} onPress={() => navigation.navigate('DrawerOpen')}>Menu</Text>
+  })
+})
+
+const SideBar = DrawerNavigator({
+  Home: {
+    screen: DashboardHome,
+  },
+  Issues: {
+    screen: IssueStack,
+  },
+});
+
+
+const DashboardStack = StackNavigator({
+  Dashboard: {
+    screen: SideBar,
+  }
+},{
+  headerMode: 'none'
+})
+
+const SimpleApp = StackNavigator({
+  Home: {
+    screen: Login,
+    navigationOptions: {
+      title: 'Monitor Dashboard',
+    }
   },
 
   Dashboard: {
@@ -83,7 +138,34 @@ const SimpleApp = StackNavigator({
       title: 'Dashboard',
     }    
   },
-  // RecentChatsScreen: { screen: RecentChatsScreen },
+}, {
+  headerMode: 'screen',
+  navigationOptions: { header: null } // ADDED THIS
+});
+
+const styles = StyleSheet.create({
+  menu: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 20,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+  },
+  dashboard: {
+    // backgroundColor: '#fff',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    textAlign: 'center',
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 50,    
+  }
 });
 
 export default class App extends React.Component {
